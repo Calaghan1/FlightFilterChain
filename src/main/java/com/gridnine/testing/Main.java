@@ -1,17 +1,38 @@
 package com.gridnine.testing;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+import java.time.format.DateTimeFormatter;
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        List<Flight> flight = FlightBuilder.createFlights();
+        for (Flight f : flight) {
+            System.out.println(f.toString());
+        }
+        System.out.println("-----------------------------");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        FlightFilterChain filterChain = new FlightFilterChain();
+        filterChain.addFilter(new DepartureBeforeNow());
+        List<Flight> flights = filterChain.filter(flight);
+        for (Flight f : flights) {
+            System.out.println(f);
+        }
+        System.out.println("-----------------------------");
+        FlightFilterChain filterChain1 = new FlightFilterChain();
+        filterChain1.addFilter(new SegmentsWithDepartureBeforeArrival());
+        flight = FlightBuilder.createFlights();
+        flights = filterChain1.filter(flight);
+        for (Flight f : flights) {
+            System.out.println(f);
+        }
+        System.out.println("-----------------------------");
+        FlightFilterChain filterChain2 = new FlightFilterChain();
+        filterChain2.addFilter(new SegmentsWithOnLandTimeMoreThan2());
+        flight = FlightBuilder.createFlights();
+        flights = filterChain2.filter(flight);
+        for (Flight f : flights) {
+            System.out.println(f);
         }
     }
 }
